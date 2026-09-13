@@ -14,7 +14,8 @@ const config = {
   repo: process.env.REPO_NAME,
   baseBranch: process.env.BASE_BRANCH ?? 'main',
   targetFile: process.env.TARGET_FILE ?? 'selfUpdatingWeb.html',
-  model: process.env.GROQ_MODEL ?? 'llama-3.3-70b-versatile',
+  model: process.env.GROQ_MODEL ?? 'qwen/qwen3.8-27b',
+  maxTokens: Number(process.env.GROQ_MAX_TOKENS ?? 900),
   intervalMs: Number(process.env.INTERVAL_MINUTES ?? 1) * 60_000,
   checkIntervalMs: Number(process.env.CHECK_INTERVAL_SECONDS ?? 10) * 1_000,
   checkTimeoutMs: Number(process.env.CHECK_TIMEOUT_MINUTES ?? 10) * 60_000,
@@ -22,7 +23,11 @@ const config = {
 };
 
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
+  maxRetries: 2,
+  timeout: 60_000
+});
 let cycleRunning = false;
 
 function git(args) {
@@ -35,9 +40,10 @@ function sleep(milliseconds) {
 
 async function generatePage(timestamp) {
   const currentPage = fs.readFileSync(config.targetFile, 'utf8');
-  const response = await groq.chat.completions.create({
+  const request = {
     model: config.model,
     temperature: 0.8,
+    max_tokens: config.maxTokens,
     messages: [
       {
         role: 'system',
@@ -53,7 +59,20 @@ async function generatePage(timestamp) {
         content: `Redesign this page with a fresh visual direction. Timestamp: ${timestamp}. Current page:\n${currentPage}`
       }
     ]
-  });
+  };
+
+  let response;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      response = await groq.chat.completions.create(request);
+      break;
+    } catch (error) {
+      if (attempt === 3) throw error;
+      const delay = error.status === 429 ? 20_000 : attempt * 5_000;
+      console.warn(`Groq request failed (attempt ${attempt}/3): ${error.message}. Retrying in ${delay / 1_000}s.`);
+      await sleep(delay);
+    }
+  }
 
   const content = response.choices[0]?.message?.content?.trim();
   if (!content || !content.toLowerCase().includes('<!doctype html>')) {
