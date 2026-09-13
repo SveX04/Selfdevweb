@@ -92,4 +92,58 @@ footer{margin-top:28px;padding-top:18px;border-top:1px solid var(--line);color:v
   tick();
   setInterval(tick, 2000);
 })();
+</script><style>
+#s1789277691265 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+#s1789277691265 .card {
+  flex: 1 1 300px;
+  background: #fff;
+  padding: 1rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+#s1789277691265 .card:hover {
+  transform: translateY(-2px);
+}
+#s1789277691265 .card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+#s1789277691265 .card p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+</style>
+<div id="s1789277691265" role="region" aria-label="Responsive card grid">
+  <div class="card">
+    <h3>Card A</h3>
+    <p>Responsive layout adapts to viewport width.</p>
+  </div>
+  <div class="card">
+    <h3>Card B</h3>
+    <p>Flexbox wrapping ensures no overflow on small screens.</p>
+  </div>
+  <div class="card">
+    <h3>Card C</h3>
+    <p>Hover effects enhance interactivity without JS dependency.</p>
+  </div>
+</div>
+<script>
+(function(){
+  var root = document.getElementById('s1789277691265');
+  var cards = root.querySelectorAll('.card');
+  cards.forEach(function(c){
+    c.addEventListener('click', function(){
+      c.style.borderColor = c.style.borderColor ? '' : '#007bff';
+    });
+  });
+})();
 </script></body></html>
