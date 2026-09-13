@@ -46,7 +46,6 @@ function validateTargetFile() {
 }
 
 async function generatePage(timestamp) {
-  const currentPage = fs.readFileSync(config.targetFile, 'utf8');
   const request = {
     model: config.model,
     temperature: 0.8,
@@ -56,15 +55,14 @@ async function generatePage(timestamp) {
         role: 'system',
         content: [
           'You are an autonomous web developer.',
-          `Return only a complete HTML document for ${config.targetFile}.`,
-          'Keep the document compact: stay under 700 output tokens so it fits the API quota.',
-          'Use concise inline CSS and JavaScript while preserving accessibility, responsive behavior, and one interactive feature.',
-          'Do not include markdown fences, external scripts, secrets, or network calls.'
+          'Return only a compact HTML fragment containing a style block, accessible main content, and one inline script.',
+          'Stay under 700 output tokens. Do not include doctype, html, head, or body tags; the agent supplies those.',
+          'Use concise inline CSS and JavaScript. Do not include markdown fences, external scripts, secrets, or network calls.'
         ].join(' ')
       },
       {
         role: 'user',
-        content: `Redesign this page with a fresh visual direction. Timestamp: ${timestamp}. Current page:\n${currentPage}`
+        content: `Create a fresh responsive redesign for the self-updating studio. Timestamp: ${timestamp}.`
       }
     ]
   };
@@ -83,10 +81,16 @@ async function generatePage(timestamp) {
   }
 
   const content = response.choices[0]?.message?.content?.trim();
-  if (!content || !content.toLowerCase().includes('<!doctype html>')) {
-    throw new Error('AI response did not contain a complete HTML document.');
+  if (!content) {
+    throw new Error('AI response did not contain an HTML fragment.');
   }
-  return content.replace(/^```html\s*/i, '').replace(/```\s*$/, '').trim();
+  const fragment = content
+    .replace(/^```html\s*/i, '')
+    .replace(/```\s*$/, '')
+    .replace(/<!doctype html>/gi, '')
+    .replace(/<\/?(?:html|head|body)[^>]*>/gi, '')
+    .trim();
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Self Updating Studio</title></head><body>${fragment}</body></html>`;
 }
 
 async function waitForChecks(prNumber, branchName) {
