@@ -38,6 +38,13 @@ function sleep(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
+function validateTargetFile() {
+  execFileSync('node', ['scripts/validate-html.js', config.targetFile], {
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe']
+  });
+}
+
 async function generatePage(timestamp) {
   const currentPage = fs.readFileSync(config.targetFile, 'utf8');
   const request = {
@@ -116,6 +123,7 @@ async function runAutonomousCycle() {
     git(['pull', '--ff-only', 'origin', config.baseBranch]);
     git(['checkout', '-b', branchName]);
     fs.writeFileSync(config.targetFile, await generatePage(timestamp));
+    validateTargetFile();
     git(['add', config.targetFile]);
     git(['commit', '-m', `feat(ai): autonomous update ${timestamp}`]);
     git(['fetch', 'origin', config.baseBranch]);
@@ -148,6 +156,7 @@ async function runAutonomousCycle() {
     console.error(`Cycle failed: ${error.message}`);
   } finally {
     try {
+      git(['restore', '--', config.targetFile]);
       git(['checkout', config.baseBranch]);
       git(['branch', '-D', branchName]);
     } catch (cleanupError) {
