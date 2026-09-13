@@ -38,8 +38,8 @@ function sleep(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
-function validateTargetFile() {
-  execFileSync('node', ['scripts/validate-html.js', config.targetFile], {
+function validateTargetFile(file = config.targetFile) {
+  execFileSync('node', ['scripts/validate-html.js', file], {
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'pipe']
   });
@@ -94,7 +94,15 @@ async function generatePage(timestamp) {
     .replace(/<!doctype html>/gi, '')
     .replace(/<\/?(?:html|head|body)[^>]*>/gi, '')
     .trim();
-  return `${currentPage.slice(0, bodyEnd)}${fragment}${currentPage.slice(bodyEnd)}`;
+  const candidate = `${currentPage.slice(0, bodyEnd)}${fragment}${currentPage.slice(bodyEnd)}`;
+  const candidateFile = `.agent-candidate-${timestamp}.html`;
+  try {
+    fs.writeFileSync(candidateFile, candidate);
+    validateTargetFile(candidateFile);
+  } finally {
+    fs.rmSync(candidateFile, { force: true });
+  }
+  return candidate;
 }
 
 async function waitForChecks(prNumber, branchName) {
