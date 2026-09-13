@@ -1,48 +1,63 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Self Updating Studio</title></head><body><style>
-:root{--bg:#0d1117;--panel:#161b22;--accent:#58a6ff;--text:#e6edf3;--dim:#8b949e;--ok:#3fb950;--serif:ui-serif,Georgia,serif;--mono:ui-monospace,monospace;--sans:system-ui,sans-serif}
-*{box-sizing:border-box}
-main{max-width:1080px;margin:0 auto;padding:24px;font-family:var(--sans);color:var(--text);line-height:1.5}
-.card{background:var(--panel);border:1px solid #21262d;border-radius:12px;padding:16px}
-.hero{display:flex;flex-wrap:wrap;gap:12px;align-items:baseline;justify-content:space-between}
-h1{font-family:var(--serif);font-size:clamp(1.6rem,4vw,2.4rem);margin:0}
-.tag{color:var(--dim);font-family:var(--mono);font-size:.85rem}
-.grid{display:grid;gap:16px;margin-top:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--ok);display:inline-block;margin-right:8px;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-#clock{font-family:var(--mono);font-size:1.3rem;color:var(--accent)}
-.h{font-family:var(--serif);font-size:1.1rem;margin:0 0 6px}
-.p{color:var(--dim);margin:0;font-size:.95rem}
-input{width:100%;background:var(--bg);border:1px solid #21262d;border-radius:8px;padding:10px;color:var(--text);font-family:var(--mono)}
-button{margin-top:10px;width:100%;background:var(--accent);color:#0d1117;border:0;border-radius:8px;padding:10px;font-weight:600;cursor:pointer}
-#log{list-style:none;margin:8px 0 0;padding:0;font-family:var(--mono);font-size:.8rem;color:var(--dim)}
-#log li{padding:3px 0;border-bottom:1px dashed #21262d}
-@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,sans-serif;background:#0d1117;color:#e6edf3;line-height:1.5;}
+  .wrap{max-width:960px;margin:0 auto;padding:1.5rem;}
+  header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;padding:1rem 0;border-bottom:1px solid #30363d;}
+  .brand{font-weight:700;font-size:1.15rem;}
+  .clock{font-family:monospace;font-size:.9rem;color:#58a6ff;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;padding:1.5rem 0;}
+  .card{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:1.1rem;transition:transform .15s,border-color .15s;}
+  .card:hover{transform:translateY(-3px);border-color:#58a6ff;}
+  .card h2{font-size:1rem;margin-bottom:.5rem;color:#79c0ff;}
+  .bar{height:8px;background:#21262d;border-radius:4px;overflow:hidden;margin-top:.6rem;}
+  .fill{height:100%;background:linear-gradient(90deg,#58a6ff,#3fb950);width:0;transition:width .8s ease;}
+  .meta{font-size:.78rem;color:#8b949e;margin-top:.4rem;}
+  .status{display:inline-block;width:8px;height:8px;border-radius:50%;background:#3fb950;margin-right:.4rem;animation:pulse 1.5s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  footer{padding:1rem 0;border-top:1px solid #30363d;font-size:.8rem;color:#8b949e;text-align:center;}
 </style>
-<main>
+
+<main class="wrap">
   
-    <h1>The Self-Updating Studio</h1>
-    <span class="tag">build <span id="ts">…</span></span>
+    <div class="brand">◈ Self-Updating Studio</div>
+    <div class="clock" id="clock" aria-live="polite">Loading…</div>
   
 
-  <section class="card grid">
-    <div>
-      <p class="h"><span class="dot" aria-hidden="true"></span>Live Clock</p>
-      <div id="clock" aria-live="polite">--:--:--</div>
-      <p class="p">Syncs to your local time, always.</p>
-    </div>
-    <div>
-      <h2 class="h">Status</h2>
-      <p class="p">Pipeline healthy · last heartbeat <span id="hb">now</span></p>
-    </div>
-    <div>
-      <h2 class="h">Quick Update</h2>
-      <label for="q" class="p">Enter a note to log</label>
-      <input id="q" type="text" placeholder="e.g. deployed v2.3" aria-label="Update note">
-      <button type="button" id="go">Commit</button>
-      <ul id="log" aria-live="polite"></ul>
-    </div>
-  </section>
+  <div class="grid" id="grid" aria-label="Live project modules"></div>
+
+  <footer>
+    <span class="status"></span> Auto-refreshing · Session ID <span id="sid"></span>
+  </footer>
 </main>
+
 <script>
-(function(){
-  var ts=new Date(1789277286015).toISOString().slice(0,</body></html>
+  (function(){
+    var TS = 1789277346015;
+    var modules = [
+      {name:"Design System", pct:82},
+      {name:"Component Library", pct:64},
+      {name:"Automation Pipeline", pct:91},
+      {name:"Analytics Dashboard", pct:47}
+    ];
+    var grid = document.getElementById('grid');
+    modules.forEach(function(m){
+      var el = document.createElement('article');
+      el.className = 'card';
+      el.innerHTML = '<h2>'+m.name+'</h2>'+
+        '<div class="bar"><div class="fill" data-pct="'+m.pct+'"></div></div>'+
+        '<div class="meta"><span class="status"></span><span class="val">'+m.pct+'% complete</span></div>';
+      grid.appendChild(el);
+      requestAnimationFrame(function(){
+        el.querySelector('.fill').style.width = m.pct + '%';
+      });
+    });
+
+    document.getElementById('sid').textContent = TS;
+
+    function tick(){
+      var d = new Date(TS + (Date.now() - performance.timeOrigin));
+      var now = new Date();
+      document.getElementById('clock').textContent =
+        now.toLocaleTimeString() + ' · seed '+new Date(TS).toISOString().slice(0,10);
+    }
+    tick();</body></html>
