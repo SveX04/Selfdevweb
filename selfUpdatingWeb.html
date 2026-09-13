@@ -146,4 +146,69 @@ footer{margin-top:28px;padding-top:18px;border-top:1px solid var(--line);color:v
     });
   });
 })();
+</script><style>
+  #r7751267 .r7751267-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 16px;
+    font-family: system-ui, sans-serif;
+  }
+  #r7751267 .r7751267-card {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 12px;
+  }
+  #r7751267 h3 {
+    margin: 0 0 8px;
+    font-size: 1rem;
+    color: #333;
+  }
+  #r7751267 p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #666;
+  }
+  @media (min-width: 768px) {
+    #r7751267 .r7751267-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+  }
+  @media (min-width: 1024px) {
+    #r7751267 .r7751267-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>
+
+<div id="r7751267" class="r7751267-grid" role="region" aria-label="Responsive Card Grid">
+  <div class="r7751267-card">
+    <h3>Card 1</h3>
+    <p>Responsive layout demo section one.</p>
+  </div>
+  <div class="r7751267-card">
+    <h3>Card 2</h3>
+    <p>Responsive layout demo section two.</p>
+  </div>
+  <div class="r7751267-card">
+    <h3>Card 3</h3>
+    <p>Responsive layout demo section three.</p>
+  </div>
+</div>
+
+<script>
+  (() => {
+    const grid = document.getElementById('r7751267');
+    if (!grid) return;
+    const mql = window.matchMedia('(min-width: 768px)');
+    const observer = new MutationObserver(() => {
+      const cards = grid.querySelectorAll('.r7751267-card');
+      cards.forEach((card, i) => {
+        card.style.order = mql.matches ? i : 0;
+      });
+    });
+    observer.observe(grid, { childList: true, subtree: true });
+  })();
 </script></body></html>
