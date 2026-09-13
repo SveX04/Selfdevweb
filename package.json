@@ -1,0 +1,14 @@
+{
+  "name": "self-updating-website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "agent": "node agent.js",
+    "validate": "node scripts/validate-html.js"
+  },
+  "dependencies": {
+    "@octokit/rest": "^21.1.0",
+    "dotenv": "^16.4.7",
+    "groq-sdk": "^0.26.0"
+  }
+}
