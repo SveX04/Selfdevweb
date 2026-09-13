@@ -46,6 +46,9 @@ function validateTargetFile() {
 }
 
 async function generatePage(timestamp) {
+  const currentPage = fs.readFileSync(config.targetFile, 'utf8');
+  const bodyEnd = currentPage.lastIndexOf('</body>');
+  if (bodyEnd === -1) throw new Error(`Cannot stack update: ${config.targetFile} has no closing body tag.`);
   const request = {
     model: config.model,
     temperature: 0.8,
@@ -55,14 +58,15 @@ async function generatePage(timestamp) {
         role: 'system',
         content: [
           'You are an autonomous web developer.',
-          'Return only a compact HTML fragment containing a style block, accessible main content, and one inline script.',
+          'Return only a compact append-only HTML fragment containing a style block, accessible content, and one inline script.',
           'Stay under 700 output tokens. Do not include doctype, html, head, or body tags; the agent supplies those.',
+          'Do not replace existing content. Use a unique prefix based on the timestamp for every id and class so this fragment can be stacked repeatedly.',
           'Use concise inline CSS and JavaScript. Do not include markdown fences, external scripts, secrets, or network calls.'
         ].join(' ')
       },
       {
         role: 'user',
-        content: `Create a fresh responsive redesign for the self-updating studio. Timestamp: ${timestamp}.`
+        content: `Append one fresh responsive enhancement to the existing self-updating studio. Timestamp: ${timestamp}.`
       }
     ]
   };
@@ -90,7 +94,7 @@ async function generatePage(timestamp) {
     .replace(/<!doctype html>/gi, '')
     .replace(/<\/?(?:html|head|body)[^>]*>/gi, '')
     .trim();
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Self Updating Studio</title></head><body>${fragment}</body></html>`;
+  return `${currentPage.slice(0, bodyEnd)}${fragment}${currentPage.slice(bodyEnd)}`;
 }
 
 async function waitForChecks(prNumber, branchName) {
@@ -127,6 +131,7 @@ async function runAutonomousCycle() {
     git(['checkout', config.baseBranch]);
     git(['pull', '--ff-only', 'origin', config.baseBranch]);
     git(['checkout', '-b', branchName]);
+    validateTargetFile();
     fs.writeFileSync(config.targetFile, await generatePage(timestamp));
     validateTargetFile();
     git(['add', config.targetFile]);
