@@ -288,4 +288,35 @@ footer{margin-top:28px;padding-top:18px;border-top:1px solid var(--line);color:v
     }, 350);
   });
 })();
+</script><style>
+#rs712{position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.5rem;margin:1rem 0}
+#rs712 button{padding:.6em 1em;border:1px solid #555;border-radius:.3em;background:#1e1e1e;color:#eee;cursor:pointer;transition:background .3s,box-shadow .3s;width:100%;font-size:1rem}
+#rs712 button[aria-pressed="true"]{background:#4a90d9;box-shadow:0 0 8px #4a90d9}
+#rs712 #rs712bar{grid-column:1/-1;height:6px;background:#333;border-radius:3px;overflow:hidden}
+#rs712 #rs712bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,#4a90d9,#7ed6f0);transition:width .3s}
+@media(max-width:480px){#rs712{grid-template-columns:1fr 1fr}}
+</style>
+<section id="rs712" aria-label="Responsive intensity controls">
+  <div id="rs712bar" aria-hidden="true"><span id="rs712fill"></span></div>
+  <button data-lv="0" aria-pressed="false">Calm</button>
+  <button data-lv="1" aria-pressed="true">Moderate</button>
+  <button data-lv="2" aria-pressed="false">Vivid</button>
+  <button data-lv="3" aria-pressed="false">Blazing</button>
+</section>
+<script>
+(function(){
+  var s=document.getElementById('rs712'),
+      btns=s.querySelectorAll('button[data-lv]'),
+      fill=document.getElementById('rs712fill'),
+      cur=1;
+  btns.forEach(function(b){
+    b.addEventListener('click',function(){
+      cur=+b.dataset.lv;
+      btns.forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});
+      fill.style.width=(cur/3*100)+'%';
+      s.style.setProperty('--rs712-lv',cur);
+    });
+  });
+  fill.style.width=(cur/3*100)+'%';
+})();
 </script></body></html>
