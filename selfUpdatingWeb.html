@@ -32,4 +32,64 @@ footer{margin-top:28px;padding-top:18px;border-top:1px solid var(--line);color:v
   </section>
 
   <footer>
-    <span>Session epoch <span id="stamp">1789277406016</</body></html>
+    <span>Session epoch <span id="stamp">1789277406016</<style>
+.u1789277596599 {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-family: sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  transition: box-shadow 0.3s ease;
+}
+.u1789277596599:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.u1789277596599-heading {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  color: #333;
+}
+.u1789277596599-meter {
+  height: 8px;
+  background: #dee2e6;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0.75rem 0;
+}
+.u1789277596599-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #28a745, #ffc107, #dc3545);
+  transition: width 0.4s ease;
+}
+@media (max-width: 600px) {
+  .u1789277596599 {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+  }
+}
+</style>
+
+<div class="u1789277596599" id="u1789277596599-card" role="region" aria-label="Live studio metrics">
+  <h3 class="u1789277596599-heading">Live Metrics</h3>
+  <p id="u1789277596599-msg">Initializing…</p>
+  <div class="u1789277596599-meter">
+    <div class="u1789277596599-fill" id="u1789277596599-fill" style="width: 0%"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const fill = document.getElementById('u1789277596599-fill');
+  const msg  = document.getElementById('u1789277596599-msg');
+  function tick(){
+    const v = Math.floor(Math.random() * 101);
+    fill.style.width = v + '%';
+    msg.textContent = 'Session level: ' + v + '%' + ' @ ' + new Date().toLocaleTimeString();
+  }
+  tick();
+  setInterval(tick, 2000);
+})();
+</script></body></html>
