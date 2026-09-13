@@ -15,7 +15,7 @@ const config = {
   baseBranch: process.env.BASE_BRANCH ?? 'main',
   targetFile: process.env.TARGET_FILE ?? 'selfUpdatingWeb.html',
   model: process.env.GROQ_MODEL ?? 'qwen/qwen3.8-27b',
-  maxTokens: Number(process.env.GROQ_MAX_TOKENS ?? 900),
+  maxTokens: Number(process.env.GROQ_MAX_TOKENS ?? 950),
   intervalMs: Number(process.env.INTERVAL_MINUTES ?? 1) * 60_000,
   checkIntervalMs: Number(process.env.CHECK_INTERVAL_SECONDS ?? 10) * 1_000,
   checkTimeoutMs: Number(process.env.CHECK_TIMEOUT_MINUTES ?? 10) * 60_000,
@@ -57,7 +57,8 @@ async function generatePage(timestamp) {
         content: [
           'You are an autonomous web developer.',
           `Return only a complete HTML document for ${config.targetFile}.`,
-          'Keep all CSS and JavaScript inline. Preserve accessibility, responsive behavior, and an interactive feature.',
+          'Keep the document compact: stay under 700 output tokens so it fits the API quota.',
+          'Use concise inline CSS and JavaScript while preserving accessibility, responsive behavior, and one interactive feature.',
           'Do not include markdown fences, external scripts, secrets, or network calls.'
         ].join(' ')
       },
