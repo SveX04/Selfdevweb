@@ -1,55 +1,25 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Self Updating Studio</title></head><body><style>
-  :root { --bg:#0f1115; --panel:#171a20; --ink:#e8eaf0; --muted:#9aa3b2; --accent:#6ee7b7; --accent2:#f59e0b; }
-  * { box-sizing:border-box; }
-  main { font-family: system-ui, sans-serif; color:var(--ink); background:var(--bg); min-height:100vh; padding:16px; }
-  .wrap { max-width:900px; margin:0 auto; }
-  header { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
-  h1 { font-size:1.35rem; margin:0; }
-  .clock { display:flex; gap:8px; align-items:center; font-variant-numeric:tabular-nums; }
-  .dot { width:9px; height:9px; border-radius:50%; background:var(--accent); box-shadow:0 0 8px var(--accent); }
-  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; }
-  .card { background:var(--panel); border:1px solid #23272f; border-radius:12px; padding:16px; }
-  .card h2 { font-size:1rem; margin:0 0 8px; }
-  .bar { height:8px; background:#23272f; border-radius:4px; overflow:hidden; margin-top:10px; }
-  .bar > span { display:block; height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width .6s ease; }
-  .stat { font-size:2rem; font-weight:700; color:var(--accent); }
-  .muted { color:var(--muted); font-size:.85rem; }
-  .pulse { animation:pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-  @media (max-width:520px){ .grid{grid-template-columns:1fr} }
-</style>
-<main>
-  <div class="wrap">
-    
-      <div>
-        <h1>Self-Updating Studio</h1>
-        <p class="muted" style="margin:4px 0 0">Live render · build <span id="build">—</span></p>
-      </div>
-      <div class="clock" role="status" aria-live="polite">
-        <span class="dot pulse" aria-hidden="true"></span>
-        <time id="clock">—</time>
-      </div>
-    
-    <div class="grid">
-      <section class="card" aria-labelledby="s1">
-        <h2 id="s1">Pipeline</h2>
-        <p class="muted">Deployment health</p>
-        <div class="bar"><span id="bar" style="width:0%"></span></div>
-        <p class="muted" id="pct" aria-live="polite">0%</p>
-      </section>
-      <section class="card" aria-labelledby="s2">
-        <h2 id="s2">Updates</h2>
-        <p class="stat" id="count">0</p>
-        <p class="muted">applied this session</p>
-      </section>
-      <section class="card" aria-labelledby="s3">
-        <h2 id="s3">Last Sync</h2>
-        <p class="stat" id="latency">0</p>
-        <p class="muted">ms round-trip</p>
-      </section>
-    </div>
-  </div>
-</main>
-<script>
-(function(){
-  var base = 178</body></html>
+  :root{--ink:#232323;--paper:#f6f3ec;--accent:#ff5c39;--accent2:#1f6feb;--ok:#2ea44f;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
+  *{box-sizing:border-box}
+  #sd{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--paper);color:var(--ink);min-height:100vh}
+  .wrap{max-width:1100px;margin:0 auto;padding:1.1rem 1.25rem 3rem}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:.6rem;font-weight:700;letter-spacing:-.01em}
+  .dot{width:11px;height:11px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(46,164,79,.6);animation:pulse 1.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(46,164,79,.5)}70%{box-shadow:0 0 0 9px rgba(46,164,79,0)}100%{box-shadow:0 0 0 0 rgba(46,164,79,0)}}
+  .clock{font-family:var(--mono);font-size:.85rem;background:#fff;border:1px solid #e3ddd0;border-radius:8px;padding:.35rem .6rem;color:#555}
+  .status{display:flex;align-items:center;gap:.45rem;font-size:.82rem;font-weight:600;color:var(--ok)}
+  h1{font-size:clamp(1.9rem,4.5vw,3rem);margin:1.4rem 0 .3rem;letter-spacing:-.03em;line-height:1.05}
+  h1 em{font-style:normal;color:var(--accent)}
+  .sub{color:#6b6b6b;max-width:46ch;margin:0 0 1.6rem}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:1.6rem}
+  .card{background:#fff;border:1px solid #e7e1d4;border-radius:14px;padding:1rem 1.1rem;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .card .k{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:#8a8a8a;font-weight:700}
+  .card .v{font-size:1.7rem;font-weight:700;margin-top:.35rem;font-variant-numeric:tabular-nums}
+  .card .v small{font-size:.85rem;color:#999;font-weight:500}
+  .grid{display:grid;grid-template-columns:1.6fr 1fr;gap:1.2rem}
+  @media(max-width:760px){.grid{grid-template-columns:1fr}}
+  .panel{background:#fff;border:1px solid #e7e1d4;border-radius:14px;padding:1.1rem 1.2rem}
+  .panel h2{font-size:1rem;margin:0 0 .9rem;display:flex;justify-content:space-between;align-items:center}
+  .live{font-family:var(--mono);font-size:.72rem;background:var(--accent);color:#fff;padding:.15rem .5rem;border-radius:20px}
+  .log{list-style:none;margin:0;padding:0;font-family:var(--mono);font-size:.82rem;max-height:280px;overflow:auto}</body></html>
