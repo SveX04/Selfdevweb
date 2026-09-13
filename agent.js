@@ -109,7 +109,7 @@ async function waitForChecks(prNumber, branchName) {
     if (states.some((state) => ['failure', 'error', 'cancelled', 'timed_out'].includes(state))) {
       throw new Error(`PR #${prNumber} failed status checks.`);
     }
-    if (states.length === 0 || states.every((state) => state === 'success')) return;
+    if (states.length === 0 || states.every((state) => ['success', 'neutral', 'skipped'].includes(state))) return;
   }
   throw new Error(`Timed out waiting for PR #${prNumber} checks.`);
 }
