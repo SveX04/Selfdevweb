@@ -393,4 +393,60 @@ footer{margin-top:28px;padding-top:18px;border-top:1px solid var(--line);color:v
   <div class="rd-1789277991289-track">
     <button type="button" class="rd-1789277991289-primary" data-rd-act="play">▶ Play</button>
     <button type="button" class="rd-1789277991289-ghost" data-rd-act="pause">⏸ Pause</button>
-    <button type="button" class="rd-1789277991289-ghost" data-r</body></html>
+    <button type="button" class="rd-1789277991289-ghost" data-r<style id="enhance_1789278051299">
+  .enhance_1789278051299 {
+    margin: 0;
+    padding: 1rem;
+    border: 2px dashed #4f46e5;
+    border-radius: 0.5rem;
+    background: #eef2ff;
+    transition: padding 0.3s ease, background 0.3s ease;
+  }
+  .enhance_1789278051299 h2 {
+    font-size: 1rem;
+    margin: 0 0 0.5rem;
+    color: #312e81;
+  }
+  .enhance_1789278051299 label {
+    display: block;
+    font-size: 0.8rem;
+    color: #4338ca;
+    margin-bottom: 0.25rem;
+  }
+  .enhance_1789278051299 input {
+    width: 100%;
+    padding: 0.4rem;
+    border: 1px solid #a5b4fc;
+    border-radius: 0.3rem;
+    font-size: 0.9rem;
+  }
+  .enhance_1789278051299 output {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: #1e1b4b;
+  }
+  @media (min-width: 600px) {
+    .enhance_1789278051299 { padding: 1.5rem; }
+  }
+</style>
+
+<section class="enhance_1789278051299" role="region" aria-labelledby="h_1789278051299">
+  <h2 id="h_1789278051299">Responsive Enhancement (1789278051299)</h2>
+  <label for="in_1789278051299">Studio Input</label>
+  <input id="in_1789278051299" name="enhance_1789278051299" type="text" placeholder="Enter value" aria-describedby="out_1789278051299" />
+  <div>
+    <output id="out_1789278051299" for="in_1789278051299" role="status">Ready</output>
+  </div>
+</section>
+
+<script>
+  (function () {
+    var inp = document.getElementById('in_1789278051299');
+    var out = document.getElementById('out_1789278051299');
+    if (!inp || !out) return;
+    inp.addEventListener('input', function () {
+      out.textContent = 'Value: ' + inp.value;
+    });
+  })();
+</script></body></html>
