@@ -1,63 +1,35 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Self Updating Studio</title></head><body><style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:system-ui,sans-serif;background:#0d1117;color:#e6edf3;line-height:1.5;}
-  .wrap{max-width:960px;margin:0 auto;padding:1.5rem;}
-  header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;padding:1rem 0;border-bottom:1px solid #30363d;}
-  .brand{font-weight:700;font-size:1.15rem;}
-  .clock{font-family:monospace;font-size:.9rem;color:#58a6ff;}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;padding:1.5rem 0;}
-  .card{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:1.1rem;transition:transform .15s,border-color .15s;}
-  .card:hover{transform:translateY(-3px);border-color:#58a6ff;}
-  .card h2{font-size:1rem;margin-bottom:.5rem;color:#79c0ff;}
-  .bar{height:8px;background:#21262d;border-radius:4px;overflow:hidden;margin-top:.6rem;}
-  .fill{height:100%;background:linear-gradient(90deg,#58a6ff,#3fb950);width:0;transition:width .8s ease;}
-  .meta{font-size:.78rem;color:#8b949e;margin-top:.4rem;}
-  .status{display:inline-block;width:8px;height:8px;border-radius:50%;background:#3fb950;margin-right:.4rem;animation:pulse 1.5s infinite;}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-  footer{padding:1rem 0;border-top:1px solid #30363d;font-size:.8rem;color:#8b949e;text-align:center;}
+:root{--bg:#0c0e11;--panel:#14171c;--ink:#e8eaee;--dim:#9aa3b2;--line:#232830;--live:#39d98a;--accent:#7aa2ff;--clock:2026-09-14 14:30:06}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.55 system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+.wrap{max-width:1080px;margin:0 auto;padding:24px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.02em}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--live);box-shadow:0 0 0 0 rgba(57,217,138,.6);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(57,217,138,0)}100%{box-shadow:0 0 0 0 rgba(57,217,138,0)}}
+.clock{font-variant-numeric:tabular-nums;color:var(--dim);background:var(--panel);border:1px solid var(--line);padding:8px 14px;border-radius:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:24px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;transition:transform .15s,border-color .15s}
+.card:hover{transform:translateY(-3px);border-color:var(--accent)}
+.card h2{margin:0 0 4px;font-size:16px}
+.card p{margin:0;color:var(--dim);font-size:13px}
+.tag{display:inline-block;font-size:11px;color:var(--live);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+footer{margin-top:28px;padding-top:18px;border-top:1px solid var(--line);color:var(--dim);font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+@media(max-width:480px){.wrap{padding:16px}}
 </style>
 
 <main class="wrap">
-  
-    <div class="brand">◈ Self-Updating Studio</div>
-    <div class="clock" id="clock" aria-live="polite">Loading…</div>
-  
+  <div class="top">
+    <div class="brand"><span class="dot" aria-hidden="true"></span>Self-Updating Studio</div>
+    <div class="clock" id="clock" role="timer" aria-live="off">—</div>
+  </div>
 
-  <div class="grid" id="grid" aria-label="Live project modules"></div>
+  <section class="grid" aria-label="Live modules">
+    <article class="card"><span class="tag">Build</span><h2>Deploy Pipeline</h2><p>Continuous rollouts with instant rollback and zero-downtime swaps.</p></article>
+    <article class="card"><span class="tag">Telemetry</span><h2>Live Signals</h2><p>Streaming metrics update the dashboard the moment events land.</p></article>
+    <article class="card"><span class="tag">Workspace</span><h2>Collaborative Canvas</h2><p>Real-time edits sync across every open session, no refresh needed.</p></article>
+    <article class="card"><span class="tag">Versioning</span><h2>Auto-Snapshot</h2><p>Every change is checkpointed so history is always one click back.</p></article>
+  </section>
 
   <footer>
-    <span class="status"></span> Auto-refreshing · Session ID <span id="sid"></span>
-  </footer>
-</main>
-
-<script>
-  (function(){
-    var TS = 1789277346015;
-    var modules = [
-      {name:"Design System", pct:82},
-      {name:"Component Library", pct:64},
-      {name:"Automation Pipeline", pct:91},
-      {name:"Analytics Dashboard", pct:47}
-    ];
-    var grid = document.getElementById('grid');
-    modules.forEach(function(m){
-      var el = document.createElement('article');
-      el.className = 'card';
-      el.innerHTML = '<h2>'+m.name+'</h2>'+
-        '<div class="bar"><div class="fill" data-pct="'+m.pct+'"></div></div>'+
-        '<div class="meta"><span class="status"></span><span class="val">'+m.pct+'% complete</span></div>';
-      grid.appendChild(el);
-      requestAnimationFrame(function(){
-        el.querySelector('.fill').style.width = m.pct + '%';
-      });
-    });
-
-    document.getElementById('sid').textContent = TS;
-
-    function tick(){
-      var d = new Date(TS + (Date.now() - performance.timeOrigin));
-      var now = new Date();
-      document.getElementById('clock').textContent =
-        now.toLocaleTimeString() + ' · seed '+new Date(TS).toISOString().slice(0,10);
-    }
-    tick();</body></html>
+    <span>Session epoch <span id="stamp">1789277406016</</body></html>
