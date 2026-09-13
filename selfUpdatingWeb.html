@@ -211,4 +211,81 @@ footer{margin-top:28px;padding-top:18px;border-top:1px solid var(--line);color:v
     });
     observer.observe(grid, { childList: true, subtree: true });
   })();
+</script><style>
+  #t1789277811270-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border: none;
+    background: #4f46e5;
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    margin: 12px 0;
+    transition: background 0.2s, transform 0.15s;
+  }
+  @media (max-width: 600px) {
+    #t1789277811270-btn {
+      width: 100%;
+      justify-content: center;
+      font-size: 15px;
+      padding: 14px;
+    }
+  }
+  #t1789277811270-btn:hover { background: #4338ca; transform: translateY(-2px); }
+  #t1789277811270-btn:active { transform: translateY(0); }
+  #t1789277811270-btn:focus-visible { outline: 3px solid #a5b4fc; outline-offset: 2px; }
+  #t1789277811270-result {
+    display: block;
+    margin: 8px 0;
+    padding: 12px 16px;
+    background: #eef2ff;
+    border-left: 4px solid #4f46e5;
+    border-radius: 0 8px 8px 0;
+    font-size: 14px;
+    color: #1e1b4b;
+    line-height: 1.5;
+  }
+  @media (max-width: 600px) {
+    #t1789277811270-result {
+      font-size: 13px;
+      padding: 10px 12px;
+    }
+  }
+</style>
+
+<div id="t1789277811270-wrap">
+  <button id="t1789277811270-btn" type="button" aria-live="polite">
+    <span aria-hidden="true">⟳</span>
+    <span id="t1789277811270-label">Refresh Studio View</span>
+  </button>
+  <span id="t1789277811270-result" role="status" aria-live="polite"></span>
+</div>
+
+<script>
+(function(){
+  var ts = 1789277811270;
+  var btn = document.getElementById('t' + ts + '-btn');
+  var label = document.getElementById('t' + ts + '-label');
+  var result = document.getElementById('t' + ts + '-result');
+  var clicks = 0;
+
+  btn.addEventListener('click', function(){
+    clicks++;
+    var w = window.innerWidth;
+    var mode = w <= 600 ? 'Mobile' : (w <= 1024 ? 'Tablet' : 'Desktop');
+    var msg = 'Refresh #' + clicks + ' · ' + mode + ' · ' + w + '×' + window.innerHeight + ' · ' + new Date().toLocaleTimeString();
+    label.textContent = 'Updating…';
+    result.style.opacity = '0';
+    setTimeout(function(){
+      label.textContent = 'Refresh Studio View';
+      result.textContent = msg;
+      result.style.transition = 'opacity 0.2s';
+      result.style.opacity = '1';
+    }, 350);
+  });
+})();
 </script></body></html>
